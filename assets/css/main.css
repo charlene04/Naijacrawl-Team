@@ -123,6 +123,16 @@ div.register-form{
     }
 }
 /* Register Page End */
+
+/*Dashboard styling*/
+.welcome-message{
+    font-size: 1.3rem;
+}
+.logout-btn{
+    font-size: 1.3rem;
+}
+/*Dashboard styling end*/
+
 /*Footer Links*/
 .foot-link.login{
     background: transparent;
