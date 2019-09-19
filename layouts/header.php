@@ -16,10 +16,10 @@
             </ul>
             <ul class="navbar-nav ml-auto text-light">
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="login.html">Log In</a>
+                    <a class="nav-link text-light" href="login">Log In</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="register.html">Sign Up</a>
+                    <a class="nav-link text-light" href="register">Sign Up</a>
                 </li>
             </ul>
         </div>

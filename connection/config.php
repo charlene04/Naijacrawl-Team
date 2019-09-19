@@ -3,6 +3,7 @@
 /*
   naijacrawl
  */
+session_start();
 try {
     $db = new PDO('sqlite:../db/db_users.sqlite3');
 
@@ -17,5 +18,4 @@ try {
     exit;
 }
 
-include('classes/user.php');
-$user = new User($db);
+

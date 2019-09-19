@@ -1,6 +1,6 @@
 <?php
 
-include('classes/password.php');
+include('password.php');
 
 class User extends Password {
 

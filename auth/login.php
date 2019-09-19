@@ -29,7 +29,7 @@
                             <a href="" class="text-dark">Forgot Password?</a>
                         </span>
                         <span>
-                            <a href="register" class="text-primary">Create Account</a>
+                            <a href="register.html" class="text-primary">Create Account</a>
                         </span>
                     </div>
                 </form>
