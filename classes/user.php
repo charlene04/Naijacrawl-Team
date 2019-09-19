@@ -35,7 +35,6 @@ class User extends Password {
         if ($this->password_verify($password, $row['password']) == 1) {
 
             $_SESSION['loggedin'] = true;
-            $_SESSION["VALID_USER_ID"] = $email;
             $_SESSION['email'] = $row['email'];
             $_SESSION['id'] = $row['id'];
 

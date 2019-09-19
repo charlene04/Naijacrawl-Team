@@ -78,7 +78,9 @@ if ($_POST) {
                                         echo json_encode($data);
                                         //else catch the exception and show the error.
                                     } catch (PDOException $e) {
-                                        $error[] = $e->getMessage();
+                                        $data['status'] = 422;
+                                        $data['message'] = $e->getMessage();
+                                        echo json_encode($data);
                                     }
                                 }
                             }

@@ -3,9 +3,10 @@
 /*
   naijacrawl
  */
+ob_start();
 session_start();
 try {
-    $db = new PDO('sqlite:../db/db_users.sqlite3');
+    $db = new PDO('sqlite:'.__DIR__.DIRECTORY_SEPARATOR.'../db/db_users.sqlite3');
 
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

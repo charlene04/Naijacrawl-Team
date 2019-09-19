@@ -1,4 +1,12 @@
- 
+<?php
+require_once('connection/config.php');
+//include the user class, pass in the database connection
+include('classes/user.php');
+$user = new User($db);
+if ($user->is_logged_in()) {
+    header('Location: user/dashboard');
+}
+?>
 <!-- Naijacrawl header script-->
 
 <!DOCTYPE html>
@@ -14,6 +22,8 @@
     
     <title>Register - Team Naijacrawl</title>
 </head>
+
+<body>
  <div class="modal" style="display: none">
         <div class="center">
             <img src="assets/img/reload.gif"  >

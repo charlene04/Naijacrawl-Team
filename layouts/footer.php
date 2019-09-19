@@ -3,12 +3,21 @@
 
 
 <footer class="bg-dark">
-    <div class="p-5">
-        <div class="icons text-light text-center">
-            <a href="login" class="foot-link login text-light btn">LOG IN</a>
-            <a href="register" class="foot-link signup text-light btn">SIGN UP</a>
-        </div>
-    </div>
+    <?php
+    if (!$user->is_logged_in()) {
+        ?>
+        <div class="p-5">
+            <div class="icons text-light text-center">
+                <a href="login" class="foot-link login text-light btn">LOG IN</a>
+                <a href="register" class="foot-link signup text-light btn">SIGN UP</a>
+            </div>
+        </div> 
+        <?php
+    }
+    ?>
+
+
+
 
 
     <div class="footer-text p-3">
@@ -79,7 +88,7 @@
 
                     return false;
                 }
-                 if (data.status == 422) {
+                if (data.status == 422) {
                     var message = data.message;
                     toastr.info(message, {timeOut: 50000});
 
@@ -100,6 +109,52 @@
     });
 </script> 
 
+<script>
+    /*
+     login
+     */
+    $('#login').submit(function (event) {
+        event.preventDefault();
+
+        $.ajaxSetup({
+
+            beforeSend: function () {
+                $(".modal").show();
+            },
+            complete: function () {
+                $(".modal").hide();
+            }
+        });
+        jQuery.ajax({
+            url: "auth/login",
+            type: 'POST',
+            dataType: "json",
+            data: {
+                email: jQuery('#email').val(),
+                password: jQuery('#password').val()
+            },
+            success: function (data) {
+                if (data.status == 401) {
+                    var message = data.message;
+                    toastr.error(message, {timeOut: 50000});
+
+                    return false;
+                }
+
+                if (data.status == 200) {
+                    var message = data.message;
+                    toastr.options.onHidden = function () {
+                        window.location.href = "user/dashboard";
+                    };
+                    toastr.success(message, {timeOut: 50000});
+
+                    return false;
+                }
+            }
+
+        });
+    });
+</script> 
 </body>
 
 </html>

@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-md navbar-light p-4">
         <a class="navbar-brand text-light" href="#">TEAM NAIJACRAWL</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -15,13 +15,33 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto text-light">
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="login">Log In</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="register">Sign Up</a>
-                </li>
+                <?php
+               
+                if ($user->is_logged_in()) {
+                    ?>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="user/dashboard"><?php echo $fullname ?></a>
+                    </li>
+                      <li class="nav-item">
+                        <a class="nav-link text-light" href="user/logout">Logout</a>
+                    </li>
+                    <?php
+                } else {
+                    ?>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="login">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="register">Sign Up</a>
+                    </li>   
+                    <?php
+                }
+                ?>
+
+
+
             </ul>
         </div>
     </nav>
 </header>
+
