@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <title>Welcome Kzito</title>
+    <title>Welcome {{name}}</title>
 </head>
 
 <body>
@@ -29,7 +29,7 @@
                 </ul>
                 <ul class="navbar-nav ml-auto text-light">
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="">Hello, Kizito</a>
+                        <a class="nav-link text-light" href="">Hello, {{name}}</a>
                     </li>
                 </ul>
             </div>
@@ -43,11 +43,11 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="welcome-message">
-                                <h3>Welcome Kizito</h3>
+                                <h3>Welcome {{name}}</h3>
                                 <p>You Have Successfully Logged Into Team Naijacrawls's Dashboard</p>
                                 <p>I would have suggested you take a photo while you're here but ehhh... you can only
                                 </p>
-                                <a class="btn btn-outline-primary logout-btn">Log Out</a>
+                                <a class="btn btn-outline-primary logout-btn" href="/logout">Log Out</a>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -63,7 +63,7 @@
     <footer class="bg-dark">
         <div class="p-5">
             <div class="icons text-light text-center">
-                <a href="" class="foot-link signup text-light btn">SIGN OUT</a>
+                <a href="/logout" class="foot-link signup text-light btn">SIGN OUT</a>
             </div>
         </div>
 

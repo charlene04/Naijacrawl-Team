@@ -1,4 +1,4 @@
-from bottle import route, run, response, redirect, request, template
+from bottle import route, run, response, redirect, request, template, static_file
 import bcrypt
 import re
 import sqlite3
@@ -10,12 +10,28 @@ cursor = db.cursor()
 @route('/')
 @route('/dashboard')
 def dashboard():
-    return template('templates/dashboard.html')
+    if not request.get_cookie('user_id', secret='user_id'):
+        return redirect('/login')
+    user_id = request.get_cookie('user_id', secret='user_id')
+    transact = cursor.execute(
+        'SELECT fullname FROM user WHERE id = ?', (user_id,))
+    result = cursor.fetchone()
+    return template('templates/dashboard.html', name=result[0])
+
+
+@route('/logout')
+def logout():
+    if not request.get_cookie('user_id', secret='user_id'):
+        return redirect('/login')
+    response.delete_cookie('user_id', secret="user_id")
+    return redirect('/')
 
 
 @route('/login')
-def index():
-    return template('index.html')
+def login():
+    if request.get_cookie('user_id', secret='user_id'):
+        return redirect('/')
+    return template('templates/login.html')
 
 
 @route('/login', method='POST')
@@ -25,66 +41,80 @@ def handle_login():
 
     if email != "" or password != "":
         transact = cursor.execute(
-            'SELECT id, fullname FROM user WHERE email = ? AND password = ?', (email, password,))
+            'SELECT id, fullname, password FROM user WHERE email = ?', (email,))
         result = cursor.fetchone()
         if result != None:
-            response.set_cookie('user_id', str(result[0]))
-            return "logged in " + result[1]
+            passwd = bcrypt.checkpw(password.encode('utf-8'), result[2])
+            if passwd:
+                response.set_cookie('user_id', result[0], secret='user_id')
+                return {'success': True, 'message': 'Logged in successfully ...'}
+            else:
+                return {'success': False, 'message': 'Invalid password'}
         else:
-            return "Invalid Username or password"
+            return {'success': False, 'message': 'Invalid Email'}
     else:
-        return "Email or Password is empty"
+        return {'success': False, 'message': 'Email or Password Field cannot be empty'}
 
 
 @route('/signup')
 def signup():
-    return template('signup_page.html')
-
-
-@route('/signup', method='POST')
-def hand_signup():
+    if request.get_cookie('user_id', secret='user_id'):
+        return redirect('/')
     try:
         cursor.execute('''
-            CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT, fullname TEXT, email TEXT UNIQUE, username TEXT UNIQUE, password TEXT, cpassword TEXT)
+            CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT, fullname TEXT, email TEXT UNIQUE, password TEXT)
         ''')
         print('Table Created')
     except:
         print('cannot create table')
+    return template('templates/register.html')
+
+
+@route('/signup', method='POST')
+def handle_signup():
 
     fullname = request.forms.get('fullname')
     email = request.forms.get('email')
-    username = request.forms.get('username')
     password = request.forms.get('password')
     cpassword = request.forms.get('cpassword')
 
+    # Serverside validation
     if (fullname == ""):
-        return "Name is Empty"
+        return {'success': False, 'message': 'Name field cannot be empty'}
+    elif len(fullname) < 8:
+        return {'success': False, 'message': 'Name too short, must be upto six characters'}
     elif (email == ""):
-        return "Email is Empty"
-    elif username == "":
-        return "Empty Value in Username"
+        return {'success': False, 'message': 'Email field eannot be empty'}
     elif (re.match(r'\w+\.?@\w+\.\w+', email) == None):
-        return "Invalid Email Address"
-    elif password == "" or cpassword == "":
-        return "Password fields might be empty"
-    elif password != password:
-        return "passwords do not match"
+        return {'success': False, 'message': 'Please Enter a valid email address'}
+    elif password == "" or cpassword == "" or len(password) < 6 or len(cpassword) < 6:
+        return {'success': False, 'message': 'Passwords too short, must be upto six characters'}
+    elif password != cpassword:
+        return {'success': False, 'message': 'Passwords do not match'}
     else:
+        '''check if email already exist in the database'''
+        transact = cursor.execute(
+            'SELECT * FROM user WHERE email = ?', (email,))
+        result = cursor.fetchone()
+        if result:
+            return {'success': False, 'message': 'Email already exist'}
+
+        '''Or proceed to create an account'''
+        hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(12))
         try:
-            cursor.execute('INSERT INTO user (fullname, email, username, password, cpassword) VALUES(?,?,?,?,?)',
-                           (fullname, email, username, password, cpassword,))
+            cursor.execute('INSERT INTO user (fullname, email, password) VALUES(?,?,?)',
+                           (fullname, email, hashed_pw,))
             db.commit()
             print('document inserted')
-            db.close()
-            return redirect('/login')
+            return {'success': True, 'message': 'Successfully registered, redirecting to login ...'}
         except:
             db.rollback()
             print('Unkbown error in registration')
-            return "Error in registration, Please try again"
+            return {'success': False, 'message': 'Unknown error during registration'}
 
 
 # Return static files
-@route('/<filepath:path>')
+@route('/assets/<filepath:path>')
 def static(filepath):
     return static_file(filepath, root='./assets/')
 
