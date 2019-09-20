@@ -20,10 +20,10 @@
                 if ($user->is_logged_in()) {
                     ?>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="user/dashboard"><?php echo $fullname ?></a>
+                        <a class="nav-link text-light" href="dashboard"><?php echo $fullname ?></a>
                     </li>
                       <li class="nav-item">
-                        <a class="nav-link text-light" href="user/logout">Logout</a>
+                        <a class="nav-link text-light" href="logout">Logout</a>
                     </li>
                     <?php
                 } else {
